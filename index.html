@@ -5,15 +5,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Stellar Growth</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stellar-base/1.0.2/stellar-base.min.js"></script>
     <script>
         console.log(StellarSdk);
     </script>
+     <script src="main.js"></script>
 </head>
-
 <body>
-    <p>Hello world</p>
+    <button onclick="writeToDocument('accounts')">Accounts</button>
+    <button onclick="writeToDocument('transactions')">Transactions</button>
+    <div id="data"></div>
+</body>
 
 </body>
 
