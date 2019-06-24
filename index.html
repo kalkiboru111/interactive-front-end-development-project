@@ -1,11 +1,25 @@
 <!DOCTYPE html>
 <html>
-<header><title>This is title</title></header>
+<head>
+    <title>This is title</title>
+     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+     <script type="text/javascript" src="main.js"></script>
+</head>
 <body>
-Open dev console to see example output
+    <button onclick="writeToDocument('rate')">Rate</button>
+    <div id="draw-here"></div>
+    <script>
+        var w = 500;
+        var h = 200;
+        var data = [40, 50, 10, 30, 20];
+    
+        var svg = d3.select("#draw-here")
+            .append(svg)
+            .attr("width", w)
+            .attr("height", h)
+            
+        
+    </script>
+    
+    
 </body>
-<script src="https://cdn.jsdelivr.net/gh/mzabriskie/axios@master/dist/axios.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/coinapi/coinapi-sdk@master/javascript-rest/coinapi_v1.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/coinapi/coinapi-sdk@master/javascript-rest/example_javascript.js"></script>
-<script type="text/javascript" src="main.js"></script>
-</html>

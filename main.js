@@ -1,5 +1,3 @@
-const baseURL = "https://rest.coinapi.io/";
-
 function getData(type, cb) {
     var xhr = new XMLHttpRequest();
 
@@ -9,13 +7,14 @@ function getData(type, cb) {
         }
     };
 
-    xhr.open("GET", "https://rest.coinapi.io/");
+    xhr.open("GET", "https://rest.coinapi.io/v1/exchangerate/BTC?apikey=2D2D1A7A-F554-4B2E-966A-F8585BB7A0EA");
     xhr.send();
+
 }
 
 function writeToDocument(type) {
     var el = document.getElementById("data");
-    el.innerHTML = "";
+    el.innerHTML = " ";
 
     getData(type, function(data) {
         data = data.results;
