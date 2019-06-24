@@ -1,6 +1,3 @@
--- download CoinAPI SDK
-
-
 
 # Your Project's Name
 

@@ -14,12 +14,24 @@
         var data = [40, 50, 10, 30, 20];
     
         var svg = d3.select("#draw-here")
-            .append(svg)
+            .append("svg")
             .attr("width", w)
             .attr("height", h)
-            
+        
+        svg.selectAll("")
+            .enter()
+            .data(data)
+            .attr("cx", function (d, i) {
+            return 50 + (i * 100);
+        })
+        .attr("cy", h / 2)
+        .attr("r", function (d) {
+            return d;
+        });
         
     </script>
-    
-    
+<script src="https://cdn.jsdelivr.net/gh/mzabriskie/axios@master/dist/axios.min.js"></script>
+<script src="coinapi_v1.js"></script>
+<script src="example_javascript.js"></script>
 </body>
+</html>
