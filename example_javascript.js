@@ -7,7 +7,7 @@ function run() {
   var t = new Date(Date.parse("2016-11-01T22:08:41+00:00"))
 
   sdk.metadata_list_exchanges().then(function (exchanges) {
-    console.log('exchanges:')
+    selectElementByID("#draw-here").writeToDocument('exchanges:')
     console.log('number: ', exchanges.length)
     exchanges.forEach(x=> { console.log(x) })
 
