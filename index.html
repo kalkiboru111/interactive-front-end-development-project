@@ -7,13 +7,24 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dc/2.1.8/dc.css"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dc/2.1.8/dc.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crossfilter/1.3.12/crossfilter.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/queue-async/1.0.7/queue.min.js"></script>
     <script type="text/javascript" src="main.js"></script>
 </head>
 
 <body>
-    <button onclick="writeToDocument('rate')">Rate</button>
-    
-    <div id="draw-here"></div>
+
+    <div id="exchange_rates"></div>
+    <div id="exchange_rates_get_specific_rate"></div>
+    <div id="exchange_rates_get_all_current_rates"></div>
+    <div id="exchanges"></div>
+
+
+
+    <script>
+        queue()
+            .defer(d3.json, "")
+            .await(makeGraphs);
+    </script>
     <script>
         var w = 500;
         var h = 200;
