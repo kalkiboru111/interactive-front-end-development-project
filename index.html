@@ -12,23 +12,17 @@
 </head>
 
 <body>
-
-    <div id="exchange_rates"></div>
-    <div id="exchange_rates_get_specific_rate"></div>
-    <div id="exchange_rates_get_all_current_rates"></div>
-    <div id="exchanges"></div>
-
-
+    
+    <div id="draw-here"></div>
+    <div id="data"></div>
 
     <script>
         queue()
-            .defer(d3.json, "")
+            .defer(d3.json, "data/BTC?apikey=2D2D1A7A-F554-4B2E-966A-F8585BB7A0EA")
             .await(makeGraphs);
     </script>
+    
     <script>
-        var w = 500;
-        var h = 200;
-        var data = [40, 50, 10, 30, 20];
 
         var scale = d3.scale.linear()
             .domain([0, d3.max(data)])
@@ -39,14 +33,14 @@
             .attr("width", w)
             .attr("height", h)
 
-        svg.selectAll("circle")
+        svg.selectAll("rect")
             .enter()
             .data(data)
-            .append("circle")
-            .attr("cx", function(d, i) {
+            .append("rect")
+            .attr("x", function(d, i) {
                 return 50 + (i * 100);
             })
-            .attr("cy", h / 2)
+            .attr("y", h / 2)
             .attr("r", function(d) {
                 return d;
             });
@@ -69,9 +63,10 @@
             .attr("font-size", "11px")
             .attr("fill", "white");
     </script>
-    <script src="https://cdn.jsdelivr.net/gh/mzabriskie/axios@master/dist/axios.min.js"></script>
+   <!-- <script src="https://cdn.jsdelivr.net/gh/mzabriskie/axios@master/dist/axios.min.js"></script>
     <script src="coinapi_v1.js"></script>
     <script src="example_javascript.js"></script>
+    -->
 </body>
 
 </html>
