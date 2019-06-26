@@ -1,3 +1,5 @@
+// Retrieiving data form URL and logging to console
+
 function getData(cb) {
     var xhr = new XMLHttpRequest();
 
@@ -15,9 +17,20 @@ function getData(cb) {
     });
 }
 
-getData(writeToDocument);
+// Calling getData function and passing JSON formatted data to d3
 
-function writeToDocument(data) {
+getData(d3.json(url, function(err, data) { 
+   data.forEach(function(row) { 
+       // parse each row as required
+   });
+})
+
+// Writing API data to "data" div
+
+/* getData(writeToDocument);
+
+ function writeToDocument(data) {
+   
     var el = document.getElementById("data");
     el.innerHTML = " ";
     
@@ -25,4 +38,4 @@ function writeToDocument(data) {
             el.innerHTML += "<p>" + item.title + "</p>";
         });
     
-}
+} */

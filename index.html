@@ -18,11 +18,8 @@
 
     <script>
         queue()
-            .defer(d3.json, "data/BTC?apikey=2D2D1A7A-F554-4B2E-966A-F8585BB7A0EA")
+            .defer(d3.json, "data")
             .await(makeGraphs);
-    </script>
-    
-    <script>
 
         var scale = d3.scale.linear()
             .domain([0, d3.max(data)])
@@ -63,10 +60,7 @@
             .attr("font-size", "11px")
             .attr("fill", "white");
     </script>
-   <!-- <script src="https://cdn.jsdelivr.net/gh/mzabriskie/axios@master/dist/axios.min.js"></script>
-    <script src="coinapi_v1.js"></script>
-    <script src="example_javascript.js"></script>
-    -->
+
 </body>
 
 </html>
