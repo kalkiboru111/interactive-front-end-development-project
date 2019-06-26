@@ -12,7 +12,7 @@
 </head>
 
 <body>
-    
+
     <div id="draw-here"></div>
     <div id="data"></div>
 
@@ -21,13 +21,20 @@
             .defer(d3.json, "https://jsonplaceholder.typicode.com/todos")
             .await(makeGraphs);
 
-        var scale = d3.scale.linear()
-            .domain([0, d3.max(data)])
-            .range([0, h])
+        // scaling data in line graph
 
-       
+        /* var scale = d3.scale.linear()
+             .domain([0, d3.max(data)])
+             .range([0, h])
+         */
+
+        function makeGraphs(error, taskData) {
+            var ndx = crossfilter(taskData);
+            var id_dim = ndx.dimension(dc.pluck('id'));
+            var tasksPerUserID = id_dim.group().reduceSum(dc.pluck('user_id'));
+            
+        }
     </script>
-
 </body>
 
 </html>
