@@ -17,13 +17,6 @@ function getData(cb) {
     });
 }
 
-// Calling getData function and passing JSON formatted data to d3
-
-getData(d3.json(url, function(err, data) { 
-   data.forEach(function(row) { 
-       // parse each row as required
-   });
-})
 
 // Writing API data to "data" div
 
