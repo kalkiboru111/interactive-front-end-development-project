@@ -32,7 +32,18 @@
             var ndx = crossfilter(taskData);
             var id_dim = ndx.dimension(dc.pluck('id'));
             var tasksPerUserID = id_dim.group().reduceSum(dc.pluck('user_id'));
-            
+
+            dc.lineChart("#chart-here")
+                .width(1000)
+                .height(300)
+                .margins({ top: 10, right: 50, bottom: 30, left: 50 })
+                .dimension(id_dim)
+                .group(tasksPerUserID)
+                .transitionDuration(500)
+                .x(d3.tasksPerUserID)
+                .xAxisLabel("ID")
+                .yAxis().ticks(4);
+            dc.renderAll();
         }
     </script>
 </body>
