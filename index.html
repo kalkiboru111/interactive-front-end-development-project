@@ -18,30 +18,16 @@
 
     <script>
         queue()
-            .defer(d3.json, "data")
+            .defer(d3.json, "https://jsonplaceholder.typicode.com/todos")
             .await(makeGraphs);
 
         var scale = d3.scale.linear()
             .domain([0, d3.max(data)])
             .range([0, h])
 
-        var svg = d3.select("#draw-here")
-            .append("svg")
-            .attr("width", w)
-            .attr("height", h)
+       
 
-        svg.selectAll("rect")
-            .enter()
-            .data(data)
-            .append("rect")
-            .attr("x", function(d, i) {
-                return 50 + (i * 100);
-            })
-            .attr("y", h / 2)
-            .attr("r", function(d) {
-                return d;
-            });
-
+      
         svg.selectAll("text")
             .data(data)
             .enter()
