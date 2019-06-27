@@ -29,26 +29,48 @@
 
 
     <div id="data"></div>
-    <div id="line_Chart"></div>
+    <div id="chart-here"></div>
 
 
     <script>
+        //Queuing makeGraph function  
+
+        queue()
+            .defer(d3.json, "https://jsonplaceholder.typicode.com/todos")
+            .await(makeGraphs);
+
         // Writing to chart
 
-        d3.json('https://jsonplaceholder.typicode.com/todos').then(
-                    dc.barChart("#chart-here")
-                        .width(300)
-                        .height(150)
-                        .margins({ top: 10, right: 50, bottom: 30, left: 50 })
-                        .dimension(name_dim)
-                        .group(total_task_per_person)
-                        .transitionDuration(500)
-                        .x(d3.scale.ordinal())
-                        .xUnits(dc.units.ordinal)
-                        .xAxisLabel("User ID")
-                        .yAxis().ticks(4);)
-                    
-                     dc.renderAll();
+        function makeGraphs(error, taskData) {
+            var ndx = crossfilter(taskData);
+
+            taskData.forEach(function(d) {
+                d.id = parseInt(d.id);
+            });
+
+            number_of_tasks_per_user(ndx);
+
+            dc.renderAll();
+        }
+
+        function number_of_tasks_per_user(ndx) {
+            var taskDim = ndx.dimension(dc.pluck("id"));
+            var userDim = taskDim.group().reduceSum(dc.pluck("userid"));
+
+            dc.barChart("#chart-here")
+                .width(350)
+                .height(250)
+                .margins({ top: 10, right: 50, bottom: 30, left: 50 })
+                .dimension(taskDim)
+                .group(userDim)
+                .transitionDuration(500)
+                .x(d3.scale.ordinal())
+                .xUnits(dc.units.ordinal)
+                .elasticY(true)
+                .xAxisLabel("User")
+                .yAxis().ticks(20);
+        }
+        
     </script>
 
 </body>

@@ -1,9 +1,5 @@
 'use strict';
 
-var priceChart = dc.lineChart('#line_Chart');
-
-
-
 // Retrieiving data form URL and logging to console
 
 function getData(cb) {
@@ -22,7 +18,6 @@ function getData(cb) {
         console.log(response);
     });
     
-    return xhr;
 }
 
 
