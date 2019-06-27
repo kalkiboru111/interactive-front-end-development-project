@@ -1,51 +1,56 @@
 <!DOCTYPE html>
 <html>
 
+
 <head>
-    <title>This is title</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dc/2.1.8/dc.css"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dc/2.1.8/dc.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crossfilter/1.3.12/crossfilter.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/queue-async/1.0.7/queue.min.js"></script>
-    <script type="text/javascript" src="main.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>D3 and Scalable Vector Graphics</title>
+    <link rel="stylesheet" href="style.css" type="text/css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dc/2.1.8/dc.min.css" type="text/css" />
+    <style>
+        div {
+            clear: left;
+        }
+    </style>
+    <!--global dc -->
+    <script async defer src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+    <script async defer src="https://cdnjs.cloudflare.com/ajax/libs/dc/2.1.8/dc.js"></script>
+    <!-- global crossfiler -->
+    <script async defer src="https://cdnjs.cloudflare.com/ajax/libs/crossfilter/1.3.12/crossfilter.min.js"></script>
+
+    <script async defer src="https://cdnjs.cloudflare.com/ajax/libs/queue-async/1.0.7/queue.min.js"></script>
+    <script async defer src="main.js"></script>
 </head>
+
 
 <body>
 
-    <div id="draw-here"></div>
+
     <div id="data"></div>
+    <div id="line_Chart"></div>
+
 
     <script>
-        queue()
-            .defer(d3.json, "https://jsonplaceholder.typicode.com/todos")
-            .await(makeGraphs);
+        // Writing to chart
 
-        // scaling data in line graph
-
-        /* var scale = d3.scale.linear()
-             .domain([0, d3.max(data)])
-             .range([0, h])
-         */
-
-        function makeGraphs(error, taskData) {
-            var ndx = crossfilter(taskData);
-            var id_dim = ndx.dimension(dc.pluck('id'));
-            var tasksPerUserID = id_dim.group().reduceSum(dc.pluck('user_id'));
-
-            dc.lineChart("#chart-here")
-                .width(1000)
-                .height(300)
-                .margins({ top: 10, right: 50, bottom: 30, left: 50 })
-                .dimension(id_dim)
-                .group(tasksPerUserID)
-                .transitionDuration(500)
-                .x(d3.tasksPerUserID)
-                .xAxisLabel("ID")
-                .yAxis().ticks(4);
-            dc.renderAll();
-        }
+        d3.json('https://jsonplaceholder.typicode.com/todos').then(
+                    dc.barChart("#chart-here")
+                        .width(300)
+                        .height(150)
+                        .margins({ top: 10, right: 50, bottom: 30, left: 50 })
+                        .dimension(name_dim)
+                        .group(total_task_per_person)
+                        .transitionDuration(500)
+                        .x(d3.scale.ordinal())
+                        .xUnits(dc.units.ordinal)
+                        .xAxisLabel("User ID")
+                        .yAxis().ticks(4);)
+                    
+                     dc.renderAll();
     </script>
+
 </body>
 
 </html>

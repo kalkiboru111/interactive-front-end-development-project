@@ -1,3 +1,9 @@
+'use strict';
+
+var priceChart = dc.lineChart('#line_Chart');
+
+
+
 // Retrieiving data form URL and logging to console
 
 function getData(cb) {
@@ -5,30 +11,36 @@ function getData(cb) {
 
     xhr.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
-           // cb(JSON.parse(this.responseText));
-           cb(JSON.parse(xhr.responseText));
+            // cb(JSON.parse(this.responseText));
+            cb(JSON.parse(xhr.responseText));
         }
     };
 
     xhr.open("GET", "https://jsonplaceholder.typicode.com/todos");
     xhr.send();
-    xhr.addEventListener("load", function(response){
+    xhr.addEventListener("load", function(response) {
         console.log(response);
     });
+    
+    return xhr;
 }
 
 
 // Writing API data to "data" div
 
-/* getData(writeToDocument);
+getData(writeToDocument);
 
- function writeToDocument(data) {
-   
+// Writing to data div
+
+function writeToDocument(data) {
+
     var el = document.getElementById("data");
     el.innerHTML = " ";
+
+    data.forEach(function(item) {
+        el.innerHTML += "<p>" + item.title + "</p>";
+    });
     
-        data.forEach(function(item) {
-            el.innerHTML += "<p>" + item.title + "</p>";
-        });
-    
-} */
+}
+
+// 
