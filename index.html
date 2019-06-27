@@ -29,7 +29,7 @@
         //Queuing makeGraph function  
 
         queue()
-            .defer(d3.json, "https://jsonplaceholder.typicode.com/todos")
+            .defer(d3.json, "https://min-api.cryptocompare.com/data/pricemulti?fsyms=BTC,ETH,LTC,EOS,XLM&tsyms=USD,EUR&api_key={334c97e2a18dbfdcba2b4bba17a5e7bfa7c980e77d3819202614e5243283690e}")
             .await(makeGraphs);
 
         // Writing to chart
