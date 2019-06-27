@@ -38,7 +38,7 @@
             var ndx = crossfilter(taskData);
 
             taskData.forEach(function(d) {
-                d.id = parseInt(d.id);
+                d = JSON.parse(this.responseText);
             });
 
             number_of_tasks_per_user(ndx);
