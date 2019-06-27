@@ -8,14 +8,14 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>D3 and Scalable Vector Graphics</title>
     <link rel="stylesheet" href="style.css" type="text/css" />
-    
-    
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/dc/2.1.8/dc.min.css"/>
+
+
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/dc/2.1.8/dc.min.css" />
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/crossfilter/1.3.12/crossfilter.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/dc/2.1.8/dc.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/queue-async/1.0.7/queue.min.js"></script>
-    
+
     <script src="main.js"></script>
 </head>
 
@@ -27,43 +27,59 @@
 
     <script>
         //Queuing makeGraph function  
-
         queue()
-            .defer(d3.json, "https://min-api.cryptocompare.com/data/pricemulti?fsyms=BTC,ETH,LTC,EOS,XLM&tsyms=USD,EUR&api_key={334c97e2a18dbfdcba2b4bba17a5e7bfa7c980e77d3819202614e5243283690e}")
+            .defer(d3.json, "https://min-api.cryptocompare.com/data/pricemulti?fsyms=BTC,ETH,LTC,EOS,XLM&tsyms=USD&api_key={334c97e2a18dbfdcba2b4bba17a5e7bfa7c980e77d3819202614e5243283690e}")
+            .defer(d3.json, "https://min-api.cryptocompare.com/data/social/coin/latest&api_key={334c97e2a18dbfdcba2b4bba17a5e7bfa7c980e77d3819202614e5243283690e}")
             .await(makeGraphs);
 
         // Writing to chart
 
-        function makeGraphs(error, taskData) {
-            var ndx = crossfilter(taskData);
-
-            taskData.forEach(function(d) {
-                d = JSON.parse(this.responseText);
-            });
-
-            number_of_tasks_per_user(ndx);
+        function makeGraphs(error, CryptoData) {
+            var ndx = crossfilter(CryptoData);
+            
+            price_by_social_coefficent(ndx);
 
             dc.renderAll();
         }
 
-        function number_of_tasks_per_user(ndx) {
-            var taskDim = ndx.dimension(dc.pluck("id"));
-            var userDim = taskDim.group().reduceSum(dc.pluck("userid"));
-
-            dc.barChart("#chart-here")
-                .width(350)
-                .height(250)
-                .margins({ top: 10, right: 50, bottom: 30, left: 50 })
-                .dimension(taskDim)
-                .group(userDim)
-                .transitionDuration(500)
-                .x(d3.scale.ordinal())
-                .xUnits(dc.units.ordinal)
-                .elasticY(true)
-                .xAxisLabel("User")
-                .yAxis().ticks(20);
-        }
+        function price_by_social_coefficent(ndx) {
+            var BTCprice = ndx.dimension(dc.pluck("BTC"));
+            var ETHprice = ndx.dimension(dc.pluck("ETH"));
+            var LTCPrice = ndx.dimension(dc.pluck("LTC"));
+            var XLMPrice = ndx.dimension(dc.pluck("XLM"));
+            
+            var BTCsocialValue = BTCprice.group().reduceSum(dc.pluck("comments_per_hour"));
+            var ETHsocialValue = ETHprice.group().reduceSum(dc.pluck("comments_per_hour"));
+            var LTCsocialValue = LTCprice.group().reduceSum(dc.pluck("comments_per_hour"));
+            var XLMsocialValue = XLMprice.group().reduceSum(dc.pluck("comments_per_hour"));
         
+            var compositeChart = dc.compositeChart('#composite-chart');
+            compositeChart
+                .width(990)
+                .height(200)
+                .dimension(date_dim)
+                .x(d3.time.scale().domain([minDate, maxDate]))
+                .yAxisLabel("Spend")
+                .legend(dc.legend().x(80).y(20).itemHeight(13).gap(5))
+                .renderHorizontalGridLines(true)
+                .compose([
+                    dc.lineChart(compositeChart)
+                    .colors('green')
+                    .group(tomSpendByMonth, 'Tom'),
+                    dc.lineChart(compositeChart)
+                    .colors('red')
+                    .group(bobSpendByMonth, 'Bob'),
+                    dc.lineChart(compositeChart)
+                    .colors('blue')
+                    .group(aliceSpendByMonth, 'Alice')
+                ])
+                .brushOn(false)
+                .render();
+            dc.renderAll();
+        }
+
+
+        }
     </script>
 
 </body>
