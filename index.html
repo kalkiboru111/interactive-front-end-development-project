@@ -15,71 +15,50 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/crossfilter/1.3.12/crossfilter.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/dc/2.1.8/dc.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/queue-async/1.0.7/queue.min.js"></script>
-
     <script src="main.js"></script>
 </head>
 
 
 <body>
     <div id="data"></div>
-    <div id="chart-here"></div>
-
+    <div id="lineChart"></div>
 
     <script>
         //Queuing makeGraph function  
         queue()
-            .defer(d3.json, "https://min-api.cryptocompare.com/data/pricemulti?fsyms=BTC,ETH,LTC,EOS,XLM&tsyms=USD&api_key={334c97e2a18dbfdcba2b4bba17a5e7bfa7c980e77d3819202614e5243283690e}")
-            .defer(d3.json, "https://min-api.cryptocompare.com/data/social/coin/latest&api_key={334c97e2a18dbfdcba2b4bba17a5e7bfa7c980e77d3819202614e5243283690e}")
+            .defer(d3.json, "https://min-api.cryptocompare.com/data/exchange/histohour?tsym=USD&limit=10&api_key={334c97e2a18dbfdcba2b4bba17a5e7bfa7c980e77d3819202614e5243283690e}")
             .await(makeGraphs);
 
         // Writing to chart
+        function makeGraphs(error, cryptoData) {
+            var ndx = crossfilter(cryptoData);
 
-        function makeGraphs(error, CryptoData) {
-            var ndx = crossfilter(CryptoData);
+            var parseTime = d3.time.format("%s").parse;
             
-            price_by_social_coefficent(ndx);
+            cryptoData.forEach(function(d) {
+                d.time = parseTime(d.time);
+            });
+            
+            var timeDim = ndx.dimension(dc.pluck("time"));
+            var volPerTime = timeDim.group.reduceSum(dc.pluck("volume"));
+
+            var minTime = timeDim.bottom(1)[0].time;
+            var maxTime = timeDim.top(1)[0].time;
+
+            dc.lineChart("#chart-here")
+                .width(1000)
+                .height(300)
+                .margins({ top: 10, right: 50, bottom: 30, left: 50 })
+                .dimension(volume)
+                .group.linear(timeParse)
+                .transitionDuration(500)
+                .x(d3.time.scale().domain([minTime, maxTime]))
+                .xAxisLabel("Time")
+                .YAxisLabel("Volume")
+                .yAxis().ticks(4);
 
             dc.renderAll();
-        }
-
-        function price_by_social_coefficent(ndx) {
-            var BTCprice = ndx.dimension(dc.pluck("BTC"));
-            var ETHprice = ndx.dimension(dc.pluck("ETH"));
-            var LTCPrice = ndx.dimension(dc.pluck("LTC"));
-            var XLMPrice = ndx.dimension(dc.pluck("XLM"));
-            
-            var BTCsocialValue = BTCprice.group().reduceSum(dc.pluck("comments_per_hour"));
-            var ETHsocialValue = ETHprice.group().reduceSum(dc.pluck("comments_per_hour"));
-            var LTCsocialValue = LTCprice.group().reduceSum(dc.pluck("comments_per_hour"));
-            var XLMsocialValue = XLMprice.group().reduceSum(dc.pluck("comments_per_hour"));
-        
-            var compositeChart = dc.compositeChart('#composite-chart');
-            compositeChart
-                .width(990)
-                .height(200)
-                .dimension(date_dim)
-                .x(d3.time.scale().domain([minDate, maxDate]))
-                .yAxisLabel("Spend")
-                .legend(dc.legend().x(80).y(20).itemHeight(13).gap(5))
-                .renderHorizontalGridLines(true)
-                .compose([
-                    dc.lineChart(compositeChart)
-                    .colors('green')
-                    .group(tomSpendByMonth, 'Tom'),
-                    dc.lineChart(compositeChart)
-                    .colors('red')
-                    .group(bobSpendByMonth, 'Bob'),
-                    dc.lineChart(compositeChart)
-                    .colors('blue')
-                    .group(aliceSpendByMonth, 'Alice')
-                ])
-                .brushOn(false)
-                .render();
-            dc.renderAll();
-        }
-
-
-        }
+        };
     </script>
 
 </body>
