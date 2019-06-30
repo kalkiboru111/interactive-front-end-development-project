@@ -37,14 +37,15 @@
             var time_dim = ndx.dimension(dc.pluck('time'));
             var vol_dim = time_dim.group().reduceSum(dc.pluck('volume'));
 
-    
+            var minTime = time_dim.bottom(1)[0];
+            var maxTime = time_dim.top(1)[0];
 
             var compositeChart = dc.compositeChart('#composite-chart');
             compositeChart
                 .width(990)
                 .height(200)
                 .dimension(vol_dim)
-                .x(d3.time.scale().domain([1561788000, 1561824000]))
+                .x(d3.time.scale().domain([minTime, maxTime]))
                 .renderHorizontalGridLines(true)
                 .compose([
                     dc.lineChart(compositeChart)
