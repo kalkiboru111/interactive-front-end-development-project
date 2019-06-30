@@ -37,14 +37,14 @@
             var time_dim = ndx.dimension(dc.pluck('time'));
             var vol_dim = time_dim.group().reduceSum(dc.pluck('volume'));
 
-            var minTime = time_dim.bottom(1)[0];
-            var maxTime = time_dim.top(1)[0];
-
+            var minTime = ndx.dimension(dc.pluck('TimeFrom'));
+            var maxTime = ndx.dimension(dc.pluck('TimeTo'));
+            
             var compositeChart = dc.compositeChart('#composite-chart');
             compositeChart
                 .width(990)
                 .height(200)
-                .dimension(vol_dim)
+                .dimension(time_dim)
                 .x(d3.time.scale().domain([minTime, maxTime]))
                 .renderHorizontalGridLines(true)
                 .compose([
@@ -52,9 +52,10 @@
                     .colors('green')
                     .group(vol_dim, 'volume'),
                 ])
-                .brushOn(false)
-                .render();
-            dc.renderAll();
+                .xAxisLabel("Time")
+                .yAxis().ticks(4);
+
+                dc.renderAll();
         }
     </script>
 
