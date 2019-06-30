@@ -20,64 +20,41 @@
 
 
 <body>
+    <div id="composite-chart"></div>
     <div id="data"></div>
-    <div id="lineChart"></div>
 
     <script>
         //Queuing makeGraph function  
         queue()
-            .defer(d3.json, "https://min-api.cryptocompare.com/data/exchange/histohour?tsym=USD&limit=10&api_key={334c97e2a18dbfdcba2b4bba17a5e7bfa7c980e77d3819202614e5243283690e}")
+            .defer(d3.json, "https://min-api.cryptocompare.com/data/exchange/histohour?tsym=USD&limit=10&api_key={334c97e2a18dbfdcba2b4bba17a5e7bfa7c980e77d3819202614e5243283690e} ")
             .await(makeGraphs);
 
         //Make composite chart
         function makeGraphs(error, transactionsData) {
             var ndx = crossfilter(transactionsData);
-            var parseDate = d3.time.format("%d/%m/%Y").parse;
-            transactionsData.forEach(function(d) {
-                d.date = parseDate(d.date);
-            });
-            
-            var date_dim = ndx.dimension(dc.pluck('date'));
-            var minDate = date_dim.bottom(1)[0].date;
-            var maxDate = date_dim.top(1)[0].date;
+            console.log(transactionsData);
 
-            function spend_by_name(name) {
-                return function(d) {
-                    if (d.name === name) {
-                        return +d.spend;
-                    }
-                    else {
-                        return 0;
-                    }
-                }
-            }
-            var tomSpendByMonth = date_dim.group().reduceSum(spend_by_name('Tom'));
-            var bobSpendByMonth = date_dim.group().reduceSum(spend_by_name('Bob'));
+            var time_dim = ndx.dimension(dc.pluck('time'));
+            var vol_dim = time_dim.group().reduceSum(dc.pluck('volume'));
 
-            var aliceSpendByMonth = date_dim.group().reduceSum(spend_by_name('Alice'));
+    
+
             var compositeChart = dc.compositeChart('#composite-chart');
             compositeChart
                 .width(990)
                 .height(200)
-                .dimension(date_dim)
-                .x(d3.time.scale().domain([minDate, maxDate]))
-                .yAxisLabel("Spend")
-                .legend(dc.legend().x(80).y(20).itemHeight(13).gap(5))
+                .dimension(vol_dim)
+                .x(d3.time.scale().domain([1561788000, 1561824000]))
                 .renderHorizontalGridLines(true)
                 .compose([
                     dc.lineChart(compositeChart)
                     .colors('green')
-                    .group(tomSpendByMonth, 'Tom'),
-                    dc.lineChart(compositeChart)
-                    .colors('red')
-                    .group(bobSpendByMonth, 'Bob'),
-                    dc.lineChart(compositeChart)
-                    .colors('blue')
-                    .group(aliceSpendByMonth, 'Alice')
+                    .group(vol_dim, 'volume'),
                 ])
                 .brushOn(false)
                 .render();
             dc.renderAll();
+        }
     </script>
 
 </body>

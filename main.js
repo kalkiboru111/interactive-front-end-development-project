@@ -1,3 +1,4 @@
+/*
 'use strict';
 
 // Retrieiving data form URL and logging to console
@@ -39,3 +40,4 @@ function writeToDocument(data) {
 }
 
 // 
+*/
