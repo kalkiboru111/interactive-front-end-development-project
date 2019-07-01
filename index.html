@@ -31,22 +31,15 @@
 
         //Make composite chart
         function makeGraphs(error, transactionsData) {
-            function getDates(){
-                transactionsData.Data.forEach(function(d) { d.time = new Date(d.time * 1000); console.log(d.time)});
-                return d.time;
-            };
-            
-            /* var yearlyDimension = ndx.dimension(function (d) {
-        return d3.timeYear(d.dd).getFullYear();
-    }); */
-            
+
             var ndx = crossfilter(transactionsData);
 
-            var date_dim = ndx.dimension(transactionsData.Data.forEach(function(d) { 
-                    d.time = new Date(d.time * 1000);
-                    return d.time})
-                    );
-            
+            var parseDate = d3.time.format("%d/%m/%Y").parse;
+            transactionsData.Data.forEach(function(d) {
+                d.time = parseDate(d.time);
+            });
+            var date_dim = ndx.dimension(dc.pluck('time'));
+
             var minDate = date_dim.bottom(1)[0];
             var maxDate = date_dim.top(1)[0];
 
