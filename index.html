@@ -20,7 +20,7 @@
 
 
 <body>
-    <div id="composite-chart"></div>
+    <div id="chart-here"></div>
     <div id="data"></div>
 
     <script>
@@ -34,38 +34,26 @@
 
             var ndx = crossfilter(transactionsData);
 
-            var date_dim = ndx.dimension(dc.pluck('time'));
-
             for (let i = 0, l = transactionsData['Data'].length; i < l; i++) {
-                var timeArray = new Array();
-                timeArray[i] = transactionsData['Data'][i]['time'];
-                return timeArray;
-                console.log(timeArray);
+                transactionsData['Data'][i]['time'];
             }
+             var date_dim = ndx.dimension(dc.pluck('time'));
 
             var minDate = date_dim.bottom(1)[0];
             var maxDate = date_dim.top(1)[0];
 
-            var price_at_close = date_dim.group().reduceSum(dc.pluck('close'));
+            var close = date_dim.group().reduceSum(dc.pluck('close'));
 
-            var compositeChart = dc.compositeChart('#composite-chart');
-
-            compositeChart
-                .width(990)
-                .height(200)
+            dc.lineChart("#chart-here")
+                .width(1000)
+                .height(300)
+                .margins({ top: 10, right: 50, bottom: 30, left: 50 })
                 .dimension(date_dim)
+                .group(close)
+                .transitionDuration(500)
                 .x(d3.time.scale().domain([minDate, maxDate]))
-                .y(d3.scale.linear().domain())
-                .renderHorizontalGridLines(true)
-                .compose([
-                    dc.lineChart(compositeChart)
-                    .colors('green')
-                    .group(price_at_close, 'close'),
-                ])
-                .yAxisLabel("Price")
                 .xAxisLabel("Time")
-                .render();
-
+                .yAxis().ticks(4);
             dc.renderAll();
         }
     </script>
