@@ -33,41 +33,50 @@
         function makeGraphs(error, transactionsData) {
 
             var ndx = crossfilter(transactionsData);
-          
+
+            var date_dim = ndx.dimension(dc.pluck('time'));
+
             for (let i = 0, l = transactionsData['Data'].length; i < l; i++) {
-                    
-                    var obj = transactionsData['Data'];
-                    console.log(obj.time[i])
-                    
-                }
-
-                var date_dim = ndx.dimension(dc.pluck('time'));
-
-                var minDate = date_dim.bottom(1)[0];
-                var maxDate = date_dim.top(1)[0];
-
-                var price_at_close = date_dim.group().reduceSum(dc.pluck('close'));
-
-                var compositeChart = dc.compositeChart('#composite-chart');
-
-                compositeChart
-                    .width(990)
-                    .height(200)
-                    .dimension(date_dim)
-                    .x(d3.time.scale().domain([minDate, maxDate]))
-                    .y(d3.scale.linear().domain())
-                    .renderHorizontalGridLines(true)
-                    .compose([
-                        dc.lineChart(compositeChart)
-                        .colors('green')
-                        .group(price_at_close, 'close'),
-                    ])
-                    .yAxisLabel("Price")
-                    .xAxisLabel("Time")
-                    .render();
-
-                dc.renderAll();
+                var timeArray = new Array();
+                timeArray[i] = transactionsData['Data'][i]['time'];
+                return timeArray;
+                console.log(timeArray);
             }
+
+            function showArray(timeArray) {
+                var quote = "";
+                for (var i = 0; i < timeArray.length; i++) {
+                    quote += timeArray[i] + " ";
+                }
+                return quote;
+                console.log(quote);
+            }
+
+            var minDate = date_dim.bottom(1)[0];
+            var maxDate = date_dim.top(1)[0];
+
+            var price_at_close = date_dim.group().reduceSum(dc.pluck('close'));
+
+            var compositeChart = dc.compositeChart('#composite-chart');
+
+            compositeChart
+                .width(990)
+                .height(200)
+                .dimension(date_dim)
+                .x(d3.time.scale().domain([minDate, maxDate]))
+                .y(d3.scale.linear().domain())
+                .renderHorizontalGridLines(true)
+                .compose([
+                    dc.lineChart(compositeChart)
+                    .colors('green')
+                    .group(price_at_close, 'close'),
+                ])
+                .yAxisLabel("Price")
+                .xAxisLabel("Time")
+                .render();
+
+            dc.renderAll();
+        }
     </script>
 
 </body>
