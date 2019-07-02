@@ -31,13 +31,16 @@
 
         //Make composite chart
         function makeGraphs(error, transactionsData) {
+            transactionsData.forEach(function(d) {
+                d.time = Date(d.Data.time);
+                d.close = d.Data.close;
+            });
 
             var ndx = crossfilter(transactionsData);
 
             for (let i = 0, l = transactionsData['Data'].length; i < l; i++) {
                 transactionsData['Data'][i]['time'];
             }
-             var date_dim = ndx.dimension(dc.pluck('time'));
 
             var minDate = date_dim.bottom(1)[0];
             var maxDate = date_dim.top(1)[0];
@@ -54,6 +57,7 @@
                 .x(d3.time.scale().domain([minDate, maxDate]))
                 .xAxisLabel("Time")
                 .yAxis().ticks(4);
+                
             dc.renderAll();
         }
     </script>
