@@ -32,16 +32,44 @@
         //Make composite chart
         function makeGraphs(error, transactionsData) {
 
-            for (let i = 0, l = transactionsData['Data'].length; i < l; i++) {
-                console.log(transactionsData['Data'][i]['time']);
-                return transactionsData['Data'][i]['time'];
+            /*
+            var aPoints = results.MRData.RaceTable.Races[0].Results;
+            console.log(aPoints);
+    
+            var finishers = [];
+            for (var i = 0; i < 22; i++) {
+            var finisher = {};
+    
+             finisher.pos = aPoints[i].position;
+             finisher.Driver = aPoints[i].Driver.givenName + " " + aPoints[i].Driver.familyName;
+             finisher.Constructor = aPoints[i].Constructor.name;
+             if (aPoints[i].FastestLap) {
+                 finisher.Lap = aPoints[i].FastestLap.lap;
+                 finisher.Time = aPoints[i].FastestLap.Time.time;
+             }
+             finisher.Grid = aPoints[i].grid;
+             finisher.Status = aPoints[i].status;
+             finisher.Points = aPoints[i].points;
+             finishers.push(finisher);
+         }
+     
+            */
+
+            var timeArray = transactionsData['Data'][0]['time'];
+            console.log(timeArray);
+
+            var times = [];
+
+            for (let i = 0; i < transactionsData['Data'].length; i++) {
+                var time = {};
+                time = transactionsData['Data'][i]['time'];
             };
 
             var ndx = crossfilter(transactionsData);
             var date_dim = ndx.dimension(dc.pluck('time'));
 
-            var minDate = date_dim.bottom(1)[0].date;
-            var maxDate = date_dim.top(1)[0].date;
+            var minDate = date_dim.bottom(1)[0];
+            var maxDate = date_dim.top(1)[0];
 
             var close = date_dim.group().reduceSum(dc.pluck('close'));
 
