@@ -31,7 +31,8 @@
 
         //Make composite chart
         function makeGraphs(error, transactionsData) {
-            transactionsData.forEach(function(d) {
+            let data = transactionsData;
+            data.forEach(function(d) {
                 d.time = Date(d.Data.time);
                 d.close = d.Data.close;
             });
@@ -57,7 +58,7 @@
                 .x(d3.time.scale().domain([minDate, maxDate]))
                 .xAxisLabel("Time")
                 .yAxis().ticks(4);
-                
+
             dc.renderAll();
         }
     </script>
