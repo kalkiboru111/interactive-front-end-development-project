@@ -70,10 +70,15 @@
             for (let d of transactionsData) {
                 new_time = convertTime(d.time);
                 d.new_time = new_time;
-                console.log(new_time)
+                console.log(d.new_time)
             };
 
             var ndx = crossfilter(transactionsData);
+            console.log(date_dim);
+            console.log(minDate);
+            console.log(maxDate);
+            console.log(close);
+            
 
             var date_dim = ndx.dimension(dc.pluck('new_time'));
             var minDate = date_dim.bottom(1)[0];
@@ -84,8 +89,8 @@
                 .width(1000)
                 .height(300)
                 .margins({ top: 10, right: 50, bottom: 30, left: 50 })
-                .dimension(close)
-                .group(date_dim)
+                .dimension(date_dim)
+                .group(close)
                 .transitionDuration(500)
                 .x(d3.time.scale().domain([minDate, maxDate]))
                 .xAxisLabel("Time")
