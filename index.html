@@ -22,106 +22,68 @@
 <body>
     <button onclick="writeToDocument('Data')">Data</button>
     <div id="data"></div>
-    
+
     <div id="chart-here"></div>
+
+    <script type="text/javascript">
+        function getChartData(type) {
+            var transactionsData = [];
+
+            getData(type, function(data) {
+                data = data.Data
+                console.dir(data);
+                var xAxisLabel = getTableHeadhers(data[0]);
+
+                data.forEach(function(item) {
+                    var transactionsDatum = [];
+
+                    Object.keys(item).forEach(function(key) {
+                        transactionsDatum.push(`${item[key]}`);
+                    })
+
+                    transactionsData.push(`${transactionsDatum}`);
+
+                })
+            })
+
+            return transactionsData;
+        }
+    </script>
 
     <script>
         queue()
             .defer(d3.json, "https://min-api.cryptocompare.com/data/histohour?fsym=BTC&tsym=USD&limit=10&api_key={d2b45d5710fc09775ad795e0636b58145f76f195cc96def94c38b842c49138d2}")
-            .await(makeGraphs());
+            .await(makeGraphs);
+
 
         //Make composite chart
-        function makeGraphs(error, getData) {
-
-            /*
-            var aPoints = results.MRData.RaceTable.Races[0].Results;
-            console.log(aPoints);
-    
-            var finishers = [];
-            for (var i = 0; i < 22; i++) {
-            var finisher = {};
-    
-             finisher.pos = aPoints[i].position;
-             finisher.Driver = aPoints[i].Driver.givenName + " " + aPoints[i].Driver.familyName;
-             finisher.Constructor = aPoints[i].Constructor.name;
-             if (aPoints[i].FastestLap) {
-                 finisher.Lap = aPoints[i].FastestLap.lap;
-                 finisher.Time = aPoints[i].FastestLap.Time.time;
-             }
-             finisher.Grid = aPoints[i].grid;
-             finisher.Status = aPoints[i].status;
-             finisher.Points = aPoints[i].points;
-             finishers.push(finisher);
-         }
-     
+        function makeGraphs(error, transactionsData) {
+            
+            getChartData(); 
+        
+            var timeArray = transactionsData['Data'][0]['time'];
+            console.log(timeArray);
             var times = [];
             for (let i = 0; i < transactionsData['Data'].length; i++) {
-                var time = transactionsData['Data'][i]['time'];
-                times.push(time);
+                var time = {};
+                time = transactionsData['Data'][i]['time'];
             };
-            
-            */
-
-            var w = 500;
-            var h = 500;
-            var barPadding = 1;
-
-           
-            getData(type, function(data) {
-                data = data.Data.time;
-
-                data.forEach(function(item) {
-                     
-                    var dataset = [];
-
-                    Object.keys(item).forEach(function(key) {
-                        dataset.push(`${item[key]}`);
-                    })
-
-                })
-                
-                return dataset;
-            })
-
-            var colWidth = w / dataset.length;
-            var barWidth = colWidth - barPadding;
-            var svg = d3.select("#chart-here")
-                .append("svg")
-                .attr("height", h)
-                .attr("width", w);
-
-            svg.selectAll("rect")
-                .data(dataset)
-                .enter()
-                .append("rect")
-                .attr("x", function(d, i) {
-                    return i * colWidth;
-                })
-                .attr("y", function(d) {
-                    return h - d;
-                })
-                .attr("height", function(d) {
-                    return d;
-                })
-                .attr("width", barWidth);
-
-            svg.selectAll("text")
-                .data(dataset)
-                .enter()
-                .append("text")
-                .text(function(d) {
-                    return d;
-                })
-                .attr("text-anchor", "middle")
-                .attr("x", function(d, i) {
-                    return i * colWidth + barWidth / 2;
-                })
-                .attr("y", function(d) {
-                    return h - d + 14;
-                })
-                .attr("font-family", "sans-serif")
-                .attr("font-size", "11px")
-                .attr("fill", "white");
+            var ndx = crossfilter(transactionsData);
+            var date_dim = ndx.dimension(dc.pluck('time'));
+            var minDate = date_dim.bottom(1)[0];
+            var maxDate = date_dim.top(1)[0];
+            var close = date_dim.group().reduceSum(dc.pluck('close'));
+            dc.lineChart("#chart-here")
+                .width(1000)
+                .height(300)
+                .margins({ top: 10, right: 50, bottom: 30, left: 50 })
+                .dimension(date_dim)
+                .group(close)
+                .transitionDuration(500)
+                .x(d3.time.scale().domain([minDate, maxDate]))
+                .xAxisLabel("Time")
+                .yAxis().ticks(4);
+            dc.renderAll();
         }
     </script>
 
