@@ -61,18 +61,20 @@
             
             getChartData(); 
         
-            var timeArray = transactionsData['Data'][0]['time'];
-            console.log(timeArray);
             var times = [];
             for (let i = 0; i < transactionsData['Data'].length; i++) {
                 var time = {};
                 time = transactionsData['Data'][i]['time'];
+                times.push(time);
             };
+            console.log(times);
+            
             var ndx = crossfilter(transactionsData);
             var date_dim = ndx.dimension(dc.pluck('time'));
             var minDate = date_dim.bottom(1)[0];
             var maxDate = date_dim.top(1)[0];
             var close = date_dim.group().reduceSum(dc.pluck('close'));
+            
             dc.lineChart("#chart-here")
                 .width(1000)
                 .height(300)
