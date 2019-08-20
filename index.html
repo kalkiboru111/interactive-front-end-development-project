@@ -65,7 +65,8 @@
             for (let i = 0; i < transactionsData['Data'].length; i++) {
                 var time = {};
                 time = transactionsData['Data'][i]['time'];
-                times.push(time);
+                var formattedTime = new Date(time * 1000);
+                times.push(formattedTime);
             };
             console.log(times);
             
