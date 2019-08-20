@@ -59,33 +59,38 @@
         //Make composite chart
         function makeGraphs(error, transactionsData) {
             
-            getChartData(); 
-        
-            var times = [];
-            for (let i = 0; i < transactionsData['Data'].length; i++) {
-                var time = {};
-                time = transactionsData['Data'][i]['time'];
-                var formattedTime = new Date(time * 1000);
-                times.push(formattedTime);
-            };
-            console.log(times);
+            transactionsData = transactionsData.Data;
+            console.log(transactionsData)
             
+             function convertTime(time) {
+                    var dtime = new Date(time * 1000);
+                    return dtime;
+                }
+           
+            for (let d of transactionsData) {
+                new_time = convertTime(d.time);
+                d.new_time = new_time;
+                console.log(new_time)
+            };
+
             var ndx = crossfilter(transactionsData);
-            var date_dim = ndx.dimension(dc.pluck('time'));
+
+            var date_dim = ndx.dimension(dc.pluck('new_time'));
             var minDate = date_dim.bottom(1)[0];
             var maxDate = date_dim.top(1)[0];
             var close = date_dim.group().reduceSum(dc.pluck('close'));
-            
-            dc.lineChart("#chart-here")
+
+            dc.barChart("#chart-here")
                 .width(1000)
                 .height(300)
                 .margins({ top: 10, right: 50, bottom: 30, left: 50 })
-                .dimension(date_dim)
-                .group(close)
+                .dimension(close)
+                .group(date_dim)
                 .transitionDuration(500)
                 .x(d3.time.scale().domain([minDate, maxDate]))
                 .xAxisLabel("Time")
                 .yAxis().ticks(4);
+
             dc.renderAll();
         }
     </script>
