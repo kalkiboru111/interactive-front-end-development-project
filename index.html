@@ -60,11 +60,6 @@
         function makeGraphs(error, transactionsData) {
 
             var TD = [];
-
-            for (var i = 0; i < transactionsData.Data.length; i++) {
-                TD.push(transactionsData.Data[i]['time']);
-                TD.push(transactionsData.Data[i]['close']);
-            }
             
             var dateFormat = d3.time.format("%Y-%m-%d %H:%M:%S");
             var numberFormat = d3.format('.2f');
@@ -73,6 +68,15 @@
                 d["time"] = dateFormat.parse(d["time"])
                 d["close"] = numberFormat.parse[d["close"]]
             });
+
+            for (var i = 0; i < transactionsData.Data.length; i++) {
+                var newObject = {};
+                TD.push(newObject);
+                newObject.time = transactionsData.Data[i]['time']
+                newObject.close = transactionsData.Data[i]['close']
+            }
+            
+            
             
             console.log(TD)
             /*
