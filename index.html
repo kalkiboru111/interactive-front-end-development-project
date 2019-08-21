@@ -58,27 +58,35 @@
 
         //Make composite chart
         function makeGraphs(error, transactionsData) {
-            
+
             var TD = [];
+            console.log(transactionsData.Data)
 
             for (var i = 0; i < transactionsData.length; i++) {
                 var data = {};
                 data.time = transactionsData.Data[i].forEach(function(item) {
                     Object.keys(item).forEach(function(key) {
                         TD.push(`${item[key]}`)
-                        console.log(data.time)
+                        
                     })
                 })
-
+    
                 data.close = transactionsData[i].Data[i].forEach(function(item) {
                     Object.keys(item).forEach(function(key) {
                         TD.push(`${item[key]}`)
                     })
                 })
-                
+
             }
             
+            console.log(data.time)
+            console.log(transactionsData)
+            
+            //Clean JSon data
             console.log(TD)
+            
+            var dateFormat = d3.time.format("%Y-%m-%d %H:%M:%S");
+            var numberFormat = d3.format('.2f');
 
             TD.forEach(function(d) {
                 d["time"] = dateFormat.parse(d["time"])
@@ -113,10 +121,7 @@
                         })
             */
 
-            //Clean JSon data
 
-            var dateFormat = d3.time.format("%Y-%m-%d %H:%M:%S");
-            var numberFormat = d3.format('.2f');
 
             /*
              function convertTime(time) {
