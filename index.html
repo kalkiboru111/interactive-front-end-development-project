@@ -60,30 +60,11 @@
         function makeGraphs(error, transactionsData) {
 
             var TD = [];
-            console.log(transactionsData.Data)
 
-            for (var i = 0; i < transactionsData.length; i++) {
-                var data = {};
-                data.time = transactionsData.Data[i].forEach(function(item) {
-                    Object.keys(item).forEach(function(key) {
-                        TD.push(`${item[key]}`)
-                        
-                    })
-                })
-    
-                data.close = transactionsData[i].Data[i].forEach(function(item) {
-                    Object.keys(item).forEach(function(key) {
-                        TD.push(`${item[key]}`)
-                    })
-                })
-
+            for (var i = 0; i < transactionsData.Data.length; i++) {
+                TD.push(transactionsData.Data[i]['time']);
+                TD.push(transactionsData.Data[i]['close']);
             }
-            
-            console.log(data.time)
-            console.log(transactionsData)
-            
-            //Clean JSon data
-            console.log(TD)
             
             var dateFormat = d3.time.format("%Y-%m-%d %H:%M:%S");
             var numberFormat = d3.format('.2f');
@@ -92,7 +73,8 @@
                 d["time"] = dateFormat.parse(d["time"])
                 d["close"] = numberFormat.parse[d["close"]]
             });
-
+            
+            console.log(TD)
             /*
                 var finishers = [];
                 for (var i = 0; i < 22; i++) {
