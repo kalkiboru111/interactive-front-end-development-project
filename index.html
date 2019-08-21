@@ -59,9 +59,66 @@
         //Make composite chart
         function makeGraphs(error, transactionsData) {
             
-            transactionsData = transactionsData.Data;
-            console.log(transactionsData)
+            var TD = [];
+
+            for (var i = 0; i < transactionsData.length; i++) {
+                var data = {};
+                data.time = transactionsData.Data[i].forEach(function(item) {
+                    Object.keys(item).forEach(function(key) {
+                        TD.push(`${item[key]}`)
+                        console.log(data.time)
+                    })
+                })
+
+                data.close = transactionsData[i].Data[i].forEach(function(item) {
+                    Object.keys(item).forEach(function(key) {
+                        TD.push(`${item[key]}`)
+                    })
+                })
+                
+            }
             
+            console.log(TD)
+
+            TD.forEach(function(d) {
+                d["time"] = dateFormat.parse(d["time"])
+                d["close"] = numberFormat.parse[d["close"]]
+            });
+
+            /*
+                var finishers = [];
+                for (var i = 0; i < 22; i++) {
+                    var finisher = {};
+               
+                    finisher.pos = aPoints[i].position;
+                    finisher.Driver = aPoints[i].Driver.givenName + " " + aPoints[i].Driver.familyName;
+                    finisher.Constructor = aPoints[i].Constructor.name;
+                    if (aPoints[i].FastestLap) {
+                         finisher.Lap = aPoints[i].FastestLap.lap;
+                         finisher.Time = aPoints[i].FastestLap.Time.time;
+                    }
+                    finisher.Grid = aPoints[i].grid;
+                    finisher.Status = aPoints[i].status;
+                    finisher.Points = aPoints[i].points;
+                     finishers.push(finisher);
+                 }
+            */
+
+            /*
+            transactionsData.forEach(function(item) {
+                            Object.keys(item).forEach(function(key) {
+                                TD.push(`${item[key]}`);
+                                TD.push(`${item[key]}`);
+                            })
+                        })
+            */
+
+            //Clean JSon data
+
+            var dateFormat = d3.time.format("%Y-%m-%d %H:%M:%S");
+            var numberFormat = d3.format('.2f');
+
+            /*
              function convertTime(time) {
                     var dtime = new Date(time * 1000);
                     return dtime;
@@ -72,15 +129,11 @@
                 d.new_time = new_time;
                 console.log(d.new_time)
             };
+            */
 
-            var ndx = crossfilter(transactionsData);
-            console.log(date_dim);
-            console.log(minDate);
-            console.log(maxDate);
-            console.log(close);
-            
-
-            var date_dim = ndx.dimension(dc.pluck('new_time'));
+            var ndx = crossfilter(TD);
+            console.log(ndx);
+            var date_dim = ndx.dimension(dc.pluck('time'));
             var minDate = date_dim.bottom(1)[0];
             var maxDate = date_dim.top(1)[0];
             var close = date_dim.group().reduceSum(dc.pluck('close'));
